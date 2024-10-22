@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Garage Master project.sln"
+    "dotnet.defaultSolution": "Garage Master.sln"
 }
