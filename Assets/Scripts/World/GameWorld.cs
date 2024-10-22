@@ -7,11 +7,10 @@ using TheSTAR.Data;
 
 namespace World
 {
-    public class GameWorld : MonoBehaviour, IPreparable
+    public class GameWorld : MonoBehaviour
     {
         [SerializeField] private Transform playerSpawnPoint;
         [SerializeField] private ResourceSource[] sources = new ResourceSource[0];
-        [SerializeField] private Factory[] factories = new Factory[0];
         [SerializeField] private Player playerPrefab;
         [SerializeField] private int levelIndex;
     
@@ -43,49 +42,12 @@ namespace World
                 },
                 CurrentPlayer.RetryInteract);
             }
-
-            FactoryData factoryData = null;
-            Factory factory;
-
-            for (int i = 0; i < factories.Length; i++)
-            {
-                factory = factories[i];
-
-                if (factory == null) continue;
-                
-                factoryData = transactions.FactoriesConfig.FactoryDatas[(int)factory.FactoryType];
-                factory.Init(i, factoryData, dropItemsContainer.DropFromSenderToPlayer, data.gameData.GetFactoryStorageValue(levelIndex, i));
-
-                factory.OnAddItemToStorageEvent += (index, value) =>
-                {
-                    data.gameData.AddItemToFactoryStorage(levelIndex, index, value);
-                    data.Save();
-                };
-
-                factory.OnEmptyStorageEvent += (index) =>
-                {
-                    data.gameData.EmptyFactoryStorage(levelIndex, index);
-                    data.Save();
-                };
-            }
         }
     
         private void SpawnPlayer()
         {
             CurrentPlayer = Instantiate(playerPrefab, playerSpawnPoint.position, Quaternion.identity, transform);
             CurrentPlayer.Init(_dropItemsContainer);
-        }
-        
-        [ContextMenu("Prepare")]
-        public void Prepare()
-        {
-#if UNITY_EDITOR
-            var allSources = GameObject.FindGameObjectsWithTag("Source");
-            sources = allSources.Select(s => s.GetComponent<ResourceSource>()).Where(s => s != null).ToArray();
-
-            var allFactories = GameObject.FindGameObjectsWithTag("Factory");
-            factories = allFactories.Select(f => f.GetComponent<Factory>()).Where(f => f != null).ToArray();
-#endif
         }
     }
 }

@@ -10,17 +10,6 @@ public class TransactionsController : MonoBehaviour
 {
     private List<ITransactionReactable> _transactionReactables;
     private DataController _data;
-
-    private const string FactoriesConfigPath = "Configs/FactoriesConfig";
-    private FactoriesConfig _factoriesConfig;
-    public FactoriesConfig FactoriesConfig
-    {
-        get
-        {
-            if (_factoriesConfig == null) _factoriesConfig = Resources.Load<FactoriesConfig>(FactoriesConfigPath);
-            return _factoriesConfig;
-        }
-    }
     
     public void Init(List<ITransactionReactable> trs, DataController data)
     {
@@ -70,8 +59,6 @@ public class TransactionsController : MonoBehaviour
     {
         foreach (var tr in _transactionReactables) tr.OnTransactionReact(itemType, finalValue);
     }
-
-    public bool CanStartTransaction(Factory factory) => GetItemsCount(factory.FactoryData.FromItemType) > 0;
 }
 
 public interface ITransactionReactable

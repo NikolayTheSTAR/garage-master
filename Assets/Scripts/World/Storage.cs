@@ -7,7 +7,6 @@ namespace World
     public class Storage : MonoBehaviour, IDropReceiver
     {
         [SerializeField] private Collider ciCollider;
-        [SerializeField] private FactoryType factoryType;
 
         public Collider Col => ciCollider;
 

@@ -43,8 +43,6 @@ public class DropItemsContainer : MonoBehaviour
         _itemPools = new Dictionary<ItemType, List<ResourceItem>>();
         _miningController = miningController;
 
-        _randomOffsetRange = transactions.FactoriesConfig.RandomOffsetRange;
-        _dropWaitAfterCreateTime = transactions.FactoriesConfig.DropWaitAfterCreateTime;
         _onFailDropToFactoryAction = onFailDropToFactoryAction;
     }
     
@@ -89,17 +87,6 @@ public class DropItemsContainer : MonoBehaviour
                 receiver.OnCompleteReceiving();
             });
         }
-    }
-
-    public void DropToFactory(Factory factory)
-    {
-        var factoryData = _transactions.FactoriesConfig.FactoryDatas[(int)factory.FactoryType];
-        var fromItemType = factoryData.FromItemType;
-        var toItemType = factoryData.ToItemType;
-        
-        _transactions.ReduceItem(fromItemType, 1, true, 
-            () => DropItemTo(fromItemType, _playerDropSender, factory), 
-            () => _onFailDropToFactoryAction());
     }
 
     public void DropToStorage(ItemType itemType, Storage storage)
