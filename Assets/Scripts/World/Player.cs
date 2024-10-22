@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Configs;
-using Mining;
 using TheSTAR.Input;
 using UnityEngine;
 using UnityEngine.AI;
@@ -14,8 +11,10 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
     [SerializeField] private Transform visualTran;
     [SerializeField] private EntranceTrigger trigger;
 
-    private Miner miner;
-    private Crafter crafter;
+    //private Miner miner;
+    //private Crafter crafter;
+    private ItemInWorldGetter itemInWorldGetter;
+    private Storage currentStorage;
 
     private bool _isMoving = false;
     public event Action OnMoveEvent;
@@ -33,8 +32,14 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
         }
     }
 
-    public void Init(TransactionsController transactions, Action<Factory> dropToFactoryAction, float dropToFactoryPeriod)
+    private DropItemsContainer drop;
+
+    // todo use DI
+    public void Init(TransactionsController transactions, DropItemsContainer drop, float dropToFactoryPeriod)
     {
+        this.drop = drop;
+
+        /*
         miner = new();
         miner.Init(visualTran);
         miner.OnStopMiningEvent += RetryInteract;
@@ -42,9 +47,13 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
         crafter = new();
         crafter.Init(transactions, dropToFactoryPeriod, dropToFactoryAction);
         crafter.OnStopCraftEvent += RetryInteract;
+        */
+
+        itemInWorldGetter = new();
+        itemInWorldGetter.Init();
 
         trigger.Init(OnEnter, OnExit);
-        trigger.SetRadius(CharacterConfig.TriggerRadius);
+        trigger.SetVisionDistance(CharacterConfig.TriggerRadius);
     }
 
     #region Move
@@ -82,8 +91,8 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
     {
         _isMoving = true;
 
-        if (crafter.CurrentFactory == null) return;
-        StopInteract(crafter.CurrentFactory);
+        //if (crafter.CurrentFactory == null) return;
+        //StopInteract(crafter.CurrentFactory);
     }
     
     private void OnMove() => OnMoveEvent?.Invoke();
@@ -91,8 +100,12 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
     private void OnStopMove()
     {
         _isMoving = false;
+        //crafter.RetryInteract(out _);
 
-        crafter.RetryInteract(out _);
+        if (currentStorage != null)
+        {
+            drop.DropToStorage(ItemType.Log, currentStorage);
+        }
     }
 
     #endregion
@@ -101,11 +114,11 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
 
     private void OnEnter(Collider other)
     {
+        /*
         if (other.CompareTag("Source"))
         {
             var s = other.GetComponent<ResourceSource>();
             miner.AddAvailableSource(s);
-            s.OnEnter();
 
             if (miner.IsMining) return;
             if (!s.CanInteract) return;
@@ -116,15 +129,27 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
         {
             var f = other.GetComponent<Factory>();
             crafter.AddAvailableFactory(f);
-            f.OnEnter();
 
             if (!f.CanInteract) return;
             if (!_isMoving) StartInteract(f);
+        }
+        else 
+        */
+        if (other.CompareTag("Item"))
+        {
+            var i = other.GetComponent<ItemInWorld>();
+            itemInWorldGetter.AddAvailableItem(i);
+        }
+        else if (other.CompareTag("Storage"))
+        {
+            var s = other.GetComponent<Storage>();
+            currentStorage = s;
         }
     }
 
     private void OnExit(Collider other)
     {
+        /*
         if (other.CompareTag("Source"))
         {
             var s = other.GetComponent<ResourceSource>();
@@ -139,29 +164,46 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
 
             StopInteract(f);
         }
+        else 
+        */
+        if (other.CompareTag("Item"))
+        {
+            var i = other.GetComponent<ItemInWorld>();
+            itemInWorldGetter.RemoveAvailableItem(i);
+        }
+        else if (other.CompareTag("Storage"))
+        {
+            currentStorage = null;
+        }
     }
 
-    private void StartInteract(ResourceSource source) => miner.StartMining(source);
-    private void StartInteract(Factory factory) => crafter.StartCraft(factory);
+    //private void StartInteract(ResourceSource source) => miner.StartMining(source);
+    //private void StartInteract(Factory factory) => crafter.StartCraft(factory);
+    private void StartInteract(ItemInWorld item) => itemInWorldGetter.GetItem(item);
 
     public void StopInteract()
     {
-        if (miner.CurrentSource != null) StopInteract(miner.CurrentSource);
-        if (crafter.CurrentFactory != null) StopInteract(crafter.CurrentFactory);
+        //if (miner.CurrentSource != null) StopInteract(miner.CurrentSource);
+        //if (crafter.CurrentFactory != null) StopInteract(crafter.CurrentFactory);
     }
 
-    private void StopInteract(ResourceSource source) => miner.StopMining(source);
-    private void StopInteract(Factory factory) => crafter.StopCraft();
+    //private void StopInteract(ResourceSource source) => miner.StopMining(source);
+    //private void StopInteract(Factory factory) => crafter.StopCraft();
 
     public void RetryInteract()
     {
+        /*
         miner.RetryInteract(out bool successful);
         if (successful) return;
 
         if (!_isMoving) crafter.RetryInteract(out _);
+        */
     }
 
-    public void RetryInteract(ResourceSource source) => miner.RetryInteract(source);
+    public void RetryInteract(ResourceSource source)
+    {
+        //miner.RetryInteract(source);
+    }
 
     #endregion
 

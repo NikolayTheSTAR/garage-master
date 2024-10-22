@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using World;
 
@@ -28,7 +26,6 @@ namespace Configs
     public class SourceMiningData
     {
         [Range(0.01f, 3)]
-        [LabelText("Mining Period (s)")]
         [SerializeField] private float _miningPeriod = 1;
         
         [Range(1, 10)]

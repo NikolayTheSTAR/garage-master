@@ -5,9 +5,6 @@ namespace World
 {
     public abstract class CiObject : MonoBehaviour
     {
-        public event Action OnEnterEvent;
-        public void OnEnter() => OnEnterEvent?.Invoke();
-
         public abstract CiType GetCiType { get; }
         public abstract Collider Col { get; }
         public abstract bool CanInteract { get; }
