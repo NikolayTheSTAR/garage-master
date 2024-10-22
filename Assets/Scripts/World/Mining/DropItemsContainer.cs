@@ -64,29 +64,24 @@ public class DropItemsContainer : MonoBehaviour
         receiver.OnStartReceiving();
         
         var item = GetItemFromPool(itemType, startPos);
-        item.transform.localScale = Vector3.zero;
+        item.transform.localScale = Vector3.one;
         
-        LeanTween.scale(item.gameObject, Vector3.one, 0.2f).setOnComplete(() => TimeUtility.Wait(_dropWaitAfterCreateTime, FlyToReceiver));
-
-        void FlyToReceiver()
+        LeanTween.value(0, 1, FlyToReceiverTime).setOnUpdate((value) =>
         {
-            LeanTween.value(0, 1, FlyToReceiverTime).setOnUpdate((value) =>
-            {
-                var way = receiver.transform.position - startPos;
-                item.transform.position = startPos + value * (way);
-                
-                // physic imitation
-                var impulseForce = items.ItemsConfig.Items[(int)itemType].PhysicalImpulse;
-                var dopValueY = Math.Abs((value * value - value) * impulseForce);
-                item.transform.position += new Vector3(0, dopValueY, 0);
+            var way = receiver.transform.position - startPos;
+            item.transform.position = startPos + value * (way);
+            
+            // physic imitation
+            var impulseForce = items.ItemsConfig.Items[(int)itemType].PhysicalImpulse;
+            var dopValueY = Math.Abs((value * value - value) * impulseForce);
+            item.transform.position += new Vector3(0, dopValueY, 0);
 
-            }) .setOnComplete(() =>
-            {
-                item.gameObject.SetActive(false);
-                completeAction?.Invoke();
-                receiver.OnCompleteReceiving();
-            });
-        }
+        }) .setOnComplete(() =>
+        {
+            item.gameObject.SetActive(false);
+            completeAction?.Invoke();
+            receiver.OnCompleteReceiving();
+        });
     }
 
     public void DropToStorage(ItemType itemType, Storage storage)
