@@ -116,6 +116,8 @@ public class DropItemsContainer : MonoBehaviour
 
         ResourceItem CreateItem() => Instantiate(items.GetResourceItemPrefab(itemType), startPos, quaternion.identity, transform);
     }
+
+    public ItemType? GetItemTypeFromInventory() => _transactions.GetItemTypeFromInventory();
 }
 
 public interface IDropSender

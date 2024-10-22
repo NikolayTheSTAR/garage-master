@@ -59,6 +59,16 @@ public class TransactionsController : MonoBehaviour
     {
         foreach (var tr in _transactionReactables) tr.OnTransactionReact(itemType, finalValue);
     }
+
+    public ItemType? GetItemTypeFromInventory()
+    {
+        foreach (var element in _data.gameData.items)
+        {
+            if (element.Value > 0) return element.Key;
+        }
+
+        return null;
+    }
 }
 
 public interface ITransactionReactable

@@ -33,7 +33,6 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
 
     private DropItemsContainer drop;
 
-    // todo use DI
     public void Init(DropItemsContainer drop)
     {
         this.drop = drop;
@@ -128,7 +127,8 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
     {
         if (currentStorage != null)
         {
-            drop.DropToStorage(ItemType.Log, currentStorage);
+            var itemType = drop.GetItemTypeFromInventory();
+            if (itemType != null) drop.DropToStorage(itemType.Value, currentStorage);
             return;
         }
 
