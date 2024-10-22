@@ -11,8 +11,6 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
     [SerializeField] private Transform visualTran;
     [SerializeField] private EntranceTrigger trigger;
 
-    //private Miner miner;
-    //private Crafter crafter;
     private ItemInWorldGetter itemInWorldGetter;
     private Storage currentStorage;
     public Transform SendPos => transform;
@@ -39,16 +37,6 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
     public void Init(DropItemsContainer drop)
     {
         this.drop = drop;
-
-        /*
-        miner = new();
-        miner.Init(visualTran);
-        miner.OnStopMiningEvent += RetryInteract;
-
-        crafter = new();
-        crafter.Init(transactions, dropToFactoryPeriod, dropToFactoryAction);
-        crafter.OnStopCraftEvent += RetryInteract;
-        */
 
         itemInWorldGetter = new();
         itemInWorldGetter.Init(drop);
@@ -91,9 +79,6 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
     private void OnStartMove()
     {
         _isMoving = true;
-
-        //if (crafter.CurrentFactory == null) return;
-        //StopInteract(crafter.CurrentFactory);
     }
     
     private void OnMove() => OnMoveEvent?.Invoke();
@@ -110,27 +95,6 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
 
     private void OnEnter(Collider other)
     {
-        /*
-        if (other.CompareTag("Source"))
-        {
-            var s = other.GetComponent<ResourceSource>();
-            miner.AddAvailableSource(s);
-
-            if (miner.IsMining) return;
-            if (!s.CanInteract) return;
-
-            StartInteract(s);
-        }
-        else if (other.CompareTag("Factory"))
-        {
-            var f = other.GetComponent<Factory>();
-            crafter.AddAvailableFactory(f);
-
-            if (!f.CanInteract) return;
-            if (!_isMoving) StartInteract(f);
-        }
-        else 
-        */
         if (other.CompareTag("Item"))
         {
             var i = other.GetComponent<ItemInWorld>();
@@ -145,23 +109,6 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
 
     private void OnExit(Collider other)
     {
-        /*
-        if (other.CompareTag("Source"))
-        {
-            var s = other.GetComponent<ResourceSource>();
-            miner.RemoveAvailableSource(s);
-
-            StopInteract(s);
-        }
-        else if (other.CompareTag("Factory"))
-        {
-            var f = other.GetComponent<Factory>();
-            crafter.RemoveAvailableFactory(f);
-
-            StopInteract(f);
-        }
-        else 
-        */
         if (other.CompareTag("Item"))
         {
             var i = other.GetComponent<ItemInWorld>();
@@ -173,18 +120,9 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
         }
     }
 
-    //private void StartInteract(ResourceSource source) => miner.StartMining(source);
-    //private void StartInteract(Factory factory) => crafter.StartCraft(factory);
-    //private void StartInteract(ItemInWorld item) => itemInWorldGetter.GetItem(item);
-
     public void StopInteract()
     {
-        //if (miner.CurrentSource != null) StopInteract(miner.CurrentSource);
-        //if (crafter.CurrentFactory != null) StopInteract(crafter.CurrentFactory);
     }
-
-    //private void StopInteract(ResourceSource source) => miner.StopMining(source);
-    //private void StopInteract(Factory factory) => crafter.StopCraft();
 
     public void RetryInteract()
     {
@@ -196,18 +134,6 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
 
         itemInWorldGetter.RetryInteract(out bool successful);
         if (successful) return;
-        
-        /*
-        miner.RetryInteract(out bool successful);
-        if (successful) return;
-
-        if (!_isMoving) crafter.RetryInteract(out _);
-        */
-    }
-
-    public void RetryInteract(ResourceSource source)
-    {
-        //miner.RetryInteract(source);
     }
 
     #endregion

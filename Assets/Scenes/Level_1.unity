@@ -448,7 +448,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ciCollider: {fileID: 164442179}
-  factoryType: 0
 --- !u!1 &179512223
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,6 +724,20 @@ MonoBehaviour:
   prolificVisual: {fileID: 992324301}
   emptyVisual: {fileID: 995364031}
   ciCollider: {fileID: 305287200}
+  _animLTID: -1
+  _health: 1
+  _sourceData:
+    _sourceType: 0
+    _dropItemType: 0
+    _miningData:
+      _miningPeriod: 1
+      _oneHitDropCount: 1
+      _maxHitsCount: 0
+      _recoveryTime:
+        seconds: 0
+        minutes: 0
+        hours: 0
+  <IsEmpty>k__BackingField: 0
 --- !u!1 &383621046
 GameObject:
   m_ObjectHideFlags: 0
@@ -1353,7 +1366,7 @@ GameObject:
   - component: {fileID: 1002400546}
   - component: {fileID: 1002400547}
   m_Layer: 0
-  m_Name: Mining
+  m_Name: Items
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1517,7 +1530,7 @@ MonoBehaviour:
   cameraController: {fileID: 1345028839}
   input: {fileID: 1375490662}
   drop: {fileID: 1928673915}
-  mining: {fileID: 1002400547}
+  items: {fileID: 1002400547}
   data: {fileID: 126127212}
   transactions: {fileID: 1186933971}
   gui: {fileID: 179512228}
@@ -2419,6 +2432,20 @@ MonoBehaviour:
   prolificVisual: {fileID: 1339339475}
   emptyVisual: {fileID: 421480973}
   ciCollider: {fileID: 1476321721}
+  _animLTID: -1
+  _health: 1
+  _sourceData:
+    _sourceType: 0
+    _dropItemType: 0
+    _miningData:
+      _miningPeriod: 1
+      _oneHitDropCount: 1
+      _maxHitsCount: 0
+      _recoveryTime:
+        seconds: 0
+        minutes: 0
+        hours: 0
+  <IsEmpty>k__BackingField: 0
 --- !u!1 &1478126702
 GameObject:
   m_ObjectHideFlags: 0
@@ -2470,12 +2497,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerSpawnPoint: {fileID: 4010250325789873955}
-  sources:
-  - {fileID: 8464046607709747463}
-  - {fileID: 305287201}
-  - {fileID: 1476321722}
-  factories:
-  - {fileID: 0}
   playerPrefab: {fileID: 7452998440400282464, guid: 1528ab92f778a4480a936f508b11e382, type: 3}
   levelIndex: 1
 --- !u!224 &1548961837 stripped
@@ -3956,6 +3977,20 @@ MonoBehaviour:
   prolificVisual: {fileID: 4980946047038607799}
   emptyVisual: {fileID: 4980946048499001443}
   ciCollider: {fileID: 8464046607709747464}
+  _animLTID: -1
+  _health: 1
+  _sourceData:
+    _sourceType: 0
+    _dropItemType: 0
+    _miningData:
+      _miningPeriod: 1
+      _oneHitDropCount: 1
+      _maxHitsCount: 0
+      _recoveryTime:
+        seconds: 0
+        minutes: 0
+        hours: 0
+  <IsEmpty>k__BackingField: 0
 --- !u!135 &8464046607709747464
 SphereCollider:
   m_ObjectHideFlags: 0

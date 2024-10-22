@@ -11,7 +11,7 @@ public class DropItemsContainer : MonoBehaviour
 {
     private IDropSender _playerDropSender;
     private IDropReceiver _playerDropReceiver;
-    private MiningController _miningController;
+    private ItemsController items;
     private TransactionsController _transactions;
     
     private Dictionary<ItemType, List<ResourceItem>> _itemPools;
@@ -32,7 +32,7 @@ public class DropItemsContainer : MonoBehaviour
 
     public void Init(
         TransactionsController transactions, 
-        MiningController miningController, 
+        ItemsController miningController, 
         IDropSender playerDropSender, 
         IDropReceiver playerDropReceiver, 
         Action onFailDropToFactoryAction)
@@ -41,7 +41,7 @@ public class DropItemsContainer : MonoBehaviour
         _playerDropSender = playerDropSender;
         _playerDropReceiver = playerDropReceiver;
         _itemPools = new Dictionary<ItemType, List<ResourceItem>>();
-        _miningController = miningController;
+        items = miningController;
 
         _onFailDropToFactoryAction = onFailDropToFactoryAction;
     }
@@ -76,7 +76,7 @@ public class DropItemsContainer : MonoBehaviour
                 item.transform.position = startPos + value * (way);
                 
                 // physic imitation
-                var impulseForce = _miningController.ItemsConfig.Items[(int)itemType].PhysicalImpulse;
+                var impulseForce = items.ItemsConfig.Items[(int)itemType].PhysicalImpulse;
                 var dopValueY = Math.Abs((value * value - value) * impulseForce);
                 item.transform.position += new Vector3(0, dopValueY, 0);
 
@@ -119,7 +119,7 @@ public class DropItemsContainer : MonoBehaviour
             return newItem;
         }
 
-        ResourceItem CreateItem() => Instantiate(_miningController.GetResourceItemPrefab(itemType), startPos, quaternion.identity, transform);
+        ResourceItem CreateItem() => Instantiate(items.GetResourceItemPrefab(itemType), startPos, quaternion.identity, transform);
     }
 }
 

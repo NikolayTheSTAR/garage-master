@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private CameraController cameraController;
     [SerializeField] private InputController input;
     [SerializeField] private DropItemsContainer drop;
-    [SerializeField] private MiningController mining;
+    [SerializeField] private ItemsController items;
     [SerializeField] private DataController data;
     [SerializeField] private TransactionsController transactions;
     [SerializeField] private GuiController gui;
@@ -38,16 +38,16 @@ public class GameController : MonoBehaviour
 
     private void Init()
     {
-        mining.Init();
-        world.Init(drop, mining, transactions, data);
+        items.Init();
+        world.Init(drop);
         cameraController.FocusTo(world.CurrentPlayer);
         
         gui.Init(out var trs);
         var gameScreen = gui.FindScreen<GameScreen>();
-        gameScreen.Init(mining);
+        gameScreen.Init(items);
         
         input.Init(gameScreen.JoystickContainer, world.CurrentPlayer);
         transactions.Init(trs, data);
-        drop.Init(transactions, mining, world.CurrentPlayer, world.CurrentPlayer, world.CurrentPlayer.StopInteract);
+        drop.Init(transactions, items, world.CurrentPlayer, world.CurrentPlayer, world.CurrentPlayer.StopInteract);
     }
 }
