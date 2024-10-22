@@ -128,12 +128,18 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
         if (currentStorage != null)
         {
             var itemType = drop.GetItemTypeFromInventory();
-            if (itemType != null) drop.DropToStorage(itemType.Value, currentStorage);
-            return;
+            if (itemType != null)
+            {
+                drop.DropToStorage(itemType.Value, currentStorage);
+                return;
+            }
         }
 
-        itemInWorldGetter.RetryInteract(out bool successful);
-        if (successful) return;
+        if (drop.GetItemTypeFromInventory() == null)
+        {
+            itemInWorldGetter.RetryInteract(out bool successful);
+            if (successful) return;
+        }
     }
 
     #endregion
