@@ -48,6 +48,6 @@ public class GameController : MonoBehaviour
         
         input.Init(gameScreen.JoystickContainer, world.CurrentPlayer);
         transactions.Init(trs, data);
-        drop.Init(transactions, mining, world.CurrentPlayer, world.CurrentPlayer.StopInteract);
+        drop.Init(transactions, mining, world.CurrentPlayer, world.CurrentPlayer, world.CurrentPlayer.StopInteract);
     }
 }

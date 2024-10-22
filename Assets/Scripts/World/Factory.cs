@@ -15,6 +15,7 @@ namespace World
         public override CiType GetCiType => CiType.Factory;
         public override bool CanInteract => !_isSending && (_itemsInStorageCount + _itemsOnWayCount) < _factoryData.NeededFromItemCount;
         public override Collider Col => ciCollider;
+        public Transform SendPos => transform;
 
         public FactoryType FactoryType => factoryType;
 
@@ -61,6 +62,9 @@ namespace World
                     _dropItemAction(this, _factoryData.ToItemType);
             });
         }
+
+        public void OnStartDrop()
+        {}
 
         public void OnCompleteDrop()
         {

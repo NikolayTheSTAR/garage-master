@@ -9,6 +9,7 @@ using Mining;
 
 public class DropItemsContainer : MonoBehaviour
 {
+    private IDropSender _playerDropSender;
     private IDropReceiver _playerDropReceiver;
     private MiningController _miningController;
     private TransactionsController _transactions;
@@ -29,9 +30,15 @@ public class DropItemsContainer : MonoBehaviour
             Random.Range(-_randomOffsetRange, _randomOffsetRange),
             Random.Range(-_randomOffsetRange, _randomOffsetRange));
 
-    public void Init(TransactionsController transactions, MiningController miningController, IDropReceiver playerDropReceiver, Action onFailDropToFactoryAction)
+    public void Init(
+        TransactionsController transactions, 
+        MiningController miningController, 
+        IDropSender playerDropSender, 
+        IDropReceiver playerDropReceiver, 
+        Action onFailDropToFactoryAction)
     {
         _transactions = transactions;
+        _playerDropSender = playerDropSender;
         _playerDropReceiver = playerDropReceiver;
         _itemPools = new Dictionary<ItemType, List<ResourceItem>>();
         _miningController = miningController;
@@ -44,15 +51,18 @@ public class DropItemsContainer : MonoBehaviour
     public void DropFromSenderToPlayer(IDropSender sender, ItemType dropItemType)
     {
         var offset = CreateItemPosOffset;
-        DropItemTo(dropItemType, sender.transform.position + offset, _playerDropReceiver, () =>
+        DropItemTo(dropItemType, sender, _playerDropReceiver, () =>
         {   
             _transactions.AddItem(dropItemType);
             sender.OnCompleteDrop();
         });
     }
     
-    private void DropItemTo(ItemType itemType, Vector3 startPos, IDropReceiver receiver, Action completeAction = null)
+    private void DropItemTo(ItemType itemType, IDropSender sender, IDropReceiver receiver, Action completeAction = null)
     {
+        var startPos = sender.SendPos.position;
+
+        sender.OnStartDrop();
         receiver.OnStartReceiving();
         
         var item = GetItemFromPool(itemType, startPos);
@@ -88,14 +98,14 @@ public class DropItemsContainer : MonoBehaviour
         var toItemType = factoryData.ToItemType;
         
         _transactions.ReduceItem(fromItemType, 1, true, 
-            () => DropItemTo(fromItemType, _playerDropReceiver.transform.position + CreateItemPosOffset, factory), 
+            () => DropItemTo(fromItemType, _playerDropSender, factory), 
             () => _onFailDropToFactoryAction());
     }
 
     public void DropToStorage(ItemType itemType, Storage storage)
     {
         _transactions.ReduceItem(itemType, 1, true,
-        () => DropItemTo(itemType, _playerDropReceiver.transform.position + CreateItemPosOffset, storage));
+        () => DropItemTo(itemType, _playerDropSender, storage));
     }
     
     private ResourceItem GetItemFromPool(ItemType itemType, Vector3 startPos, bool autoActivate = true)
@@ -128,7 +138,8 @@ public class DropItemsContainer : MonoBehaviour
 
 public interface IDropSender
 {
-    Transform transform { get; }
+    Transform SendPos {get;}
+    void OnStartDrop();
     void OnCompleteDrop();
 }
 

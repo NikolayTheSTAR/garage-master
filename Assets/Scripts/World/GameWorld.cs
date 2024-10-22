@@ -73,7 +73,7 @@ namespace World
         private void SpawnPlayer()
         {
             CurrentPlayer = Instantiate(playerPrefab, playerSpawnPoint.position, Quaternion.identity, transform);
-            CurrentPlayer.Init(_transactions, _dropItemsContainer, _transactions.FactoriesConfig.DropToFactoryPeriod);
+            CurrentPlayer.Init(_dropItemsContainer);
         }
         
         [ContextMenu("Prepare")]

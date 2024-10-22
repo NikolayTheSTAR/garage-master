@@ -28,6 +28,8 @@ namespace World
         public override bool CanInteract => !IsEmpty;
         public bool IsEmpty { get; private set; }
 
+        public Transform SendPos => transform;
+
         public SourceType SourceType => sourceType;
         public SourceData SourceData => _sourceData;
 
@@ -95,6 +97,9 @@ namespace World
                         LeanTween.scaleY(gameObject, 1f, 0.2f).id;
                 }).id;
         }
+
+        public void OnStartDrop()
+        {}
         
         public void OnCompleteDrop()
         {

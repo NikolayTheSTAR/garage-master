@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using World;
 
-public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDropReceiver
+public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDropReceiver, IDropSender
 {
     [SerializeField] private NavMeshAgent meshAgent;
     [SerializeField] private Transform visualTran;
@@ -15,6 +15,7 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
     //private Crafter crafter;
     private ItemInWorldGetter itemInWorldGetter;
     private Storage currentStorage;
+    public Transform SendPos => transform;
 
     private bool _isMoving = false;
     public event Action OnMoveEvent;
@@ -35,7 +36,7 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
     private DropItemsContainer drop;
 
     // todo use DI
-    public void Init(TransactionsController transactions, DropItemsContainer drop, float dropToFactoryPeriod)
+    public void Init(DropItemsContainer drop)
     {
         this.drop = drop;
 
@@ -50,7 +51,7 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
         */
 
         itemInWorldGetter = new();
-        itemInWorldGetter.Init();
+        itemInWorldGetter.Init(drop);
 
         trigger.Init(OnEnter, OnExit);
         trigger.SetVisionDistance(CharacterConfig.TriggerRadius);
@@ -100,12 +101,7 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
     private void OnStopMove()
     {
         _isMoving = false;
-        //crafter.RetryInteract(out _);
-
-        if (currentStorage != null)
-        {
-            drop.DropToStorage(ItemType.Log, currentStorage);
-        }
+        RetryInteract();
     }
 
     #endregion
@@ -179,7 +175,7 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
 
     //private void StartInteract(ResourceSource source) => miner.StartMining(source);
     //private void StartInteract(Factory factory) => crafter.StartCraft(factory);
-    private void StartInteract(ItemInWorld item) => itemInWorldGetter.GetItem(item);
+    //private void StartInteract(ItemInWorld item) => itemInWorldGetter.GetItem(item);
 
     public void StopInteract()
     {
@@ -192,6 +188,15 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
 
     public void RetryInteract()
     {
+        if (currentStorage != null)
+        {
+            drop.DropToStorage(ItemType.Log, currentStorage);
+            return;
+        }
+
+        itemInWorldGetter.RetryInteract(out bool successful);
+        if (successful) return;
+        
         /*
         miner.RetryInteract(out bool successful);
         if (successful) return;
@@ -210,4 +215,8 @@ public class Player : MonoBehaviour, ICameraFocusable, IJoystickControlled, IDro
     public void OnStartReceiving() {}
 
     public void OnCompleteReceiving() {}
+
+    public void OnStartDrop() {}
+
+    public void OnCompleteDrop() {}
 }
