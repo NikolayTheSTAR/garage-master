@@ -4,11 +4,8 @@ using TheSTAR.Data;
 using TheSTAR.GUI;
 using TheSTAR.GUI.Screens;
 using TheSTAR.Input;
-using Tutorial;
 using UnityEngine;
 using World;
-using System.Diagnostics;
-using System.Threading;
 
 public class GameController : MonoBehaviour
 {
@@ -20,7 +17,6 @@ public class GameController : MonoBehaviour
     [SerializeField] private DataController data;
     [SerializeField] private TransactionsController transactions;
     [SerializeField] private GuiController gui;
-    [SerializeField] private TutorialController tutorial;
 
     [Space] [SerializeField] private float startGameDelay = 0.5f;
 
@@ -53,6 +49,5 @@ public class GameController : MonoBehaviour
         input.Init(gameScreen.JoystickContainer, world.CurrentPlayer);
         transactions.Init(trs, data);
         drop.Init(transactions, mining, world.CurrentPlayer, world.CurrentPlayer.StopInteract);
-        tutorial.Init(this, data, world.CurrentPlayer, transactions);
     }
 }
